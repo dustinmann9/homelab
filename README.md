@@ -22,7 +22,7 @@ See [docs/vm-architecture.md](docs/vm-architecture.md) for the planned VM layout
 
 ## SSL Certificate Management
 
-See [docs/ssl-certificate-management.md](docs/ssl-certificate-management.md) for the complete SSL/TLS certificate strategy using a private Certificate Authority (Root CA → Intermediate CA → Service Certificates).
+See [docs/ssl-certificate-management.md](docs/ssl-certificate-management.md) for the complete SSL/TLS certificate strategy using a private Certificate Authority infrastructure (Mannsclann Homelab Root CA → Mannsclann Homelab Intermediate CA → Service Certificates).
 
 ## Directory Structure
 

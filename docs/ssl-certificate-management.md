@@ -15,8 +15,8 @@ This homelab uses a private Certificate Authority (CA) infrastructure to issue S
 ### Three-Tier Architecture
 
 ```
-Root CA (homelab-root-ca)
-  └── Intermediate CA (homelab-intermediate-ca)
+Root CA (mannsclann-homelab-root-ca)
+  └── Intermediate CA (mannsclann-homelab-intermediate-ca)
       └── Server/Service Certificates
           ├── proxmox.homelab.local
           ├── pihole.homelab.local
@@ -86,8 +86,8 @@ certs/*/private/
 
 ### Root CA Certificate
 
-- **Common Name (CN)**: Homelab Root CA
-- **Organization (O)**: Homelab
+- **Common Name (CN)**: Mannsclann Homelab Root CA
+- **Organization (O)**: Mannsclann Homelab
 - **Validity**: 7300 days (20 years)
 - **Key Size**: 4096 bits RSA (or EC P-384)
 - **Usage**: Certificate Signing, CRL Signing
@@ -95,8 +95,8 @@ certs/*/private/
 
 ### Intermediate CA Certificate
 
-- **Common Name (CN)**: Homelab Intermediate CA
-- **Organization (O)**: Homelab
+- **Common Name (CN)**: Mannsclann Homelab Intermediate CA
+- **Organization (O)**: Mannsclann Homelab
 - **Validity**: 3650 days (10 years)
 - **Key Size**: 4096 bits RSA (or EC P-256)
 - **Usage**: Certificate Signing, CRL Signing
