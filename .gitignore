@@ -2,9 +2,18 @@
 *.key
 *.pem
 *.pfx
+*.p12
 secrets/
 .env
 credentials.json
+
+# Certificate Authority private keys and sensitive data
+certs/*/private/
+certs/root-ca/private/
+certs/intermediate-ca/private/
+*.csr
+index.txt*
+serial*
 
 # Backup files
 *.bak

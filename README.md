@@ -20,10 +20,18 @@ See [docs/hardware-specs.md](docs/hardware-specs.md) for detailed hardware infor
 
 See [docs/vm-architecture.md](docs/vm-architecture.md) for the planned VM layout and resource allocation.
 
+## SSL Certificate Management
+
+See [docs/ssl-certificate-management.md](docs/ssl-certificate-management.md) for the complete SSL/TLS certificate strategy using a private Certificate Authority (Root CA → Intermediate CA → Service Certificates).
+
 ## Directory Structure
 
 ```
 homelab/
+├── certs/          # SSL certificates and CA infrastructure
+│   ├── root-ca/    # Root Certificate Authority
+│   ├── intermediate-ca/  # Intermediate Certificate Authority
+│   └── services/   # Service certificates
 ├── docs/           # Documentation files
 ├── specs/          # VM specifications and configs
 ├── scripts/        # Automation and setup scripts
