@@ -1,0 +1,29 @@
+# Sensitive files
+*.key
+*.pem
+*.pfx
+secrets/
+.env
+credentials.json
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# ISO images
+*.iso
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
