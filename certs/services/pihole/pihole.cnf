@@ -1,0 +1,33 @@
+[ req ]
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+default_md          = sha256
+req_extensions      = v3_req
+
+[ req_distinguished_name ]
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+emailAddress                    = Email Address
+
+countryName_default             = US
+stateOrProvinceName_default     = WA
+localityName_default            = Issaquah
+0.organizationName_default      = Mannsclann Homelab
+organizationalUnitName_default  = Technology Services
+emailAddress_default            = dustin.mann9@gmail.com
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = pihole.home
+DNS.2 = pihole
+IP.1 = 192.168.10.8
