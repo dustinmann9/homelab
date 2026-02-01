@@ -147,9 +147,33 @@ sudo systemctl restart sshd
 
 **Important**: Keep an existing SSH session open until you verify the new configuration works.
 
-## Step 6: Verify Installation
+## Step 6: Configure Web Console User
+
+Proxmox has its own user/permission system separate from Linux. Add the admin user to Proxmox for web console access.
+
+### Add user to Proxmox
+
+```bash
+sudo pveum user add dustin@pam
+```
+
+### Assign Administrator role
+
+```bash
+sudo pveum aclmod / -user dustin@pam -role Administrator
+```
+
+### Login to web console
+
+- Username: `dustin` (select "Linux PAM standard authentication" from realm dropdown)
+- Password: your Linux password
+
+**Note**: Root login remains enabled as a recovery option, but use `dustin@pam` for daily administration to maintain an audit trail of actions.
+
+## Step 7: Verify Installation
 
 - [ ] Can access web console at `https://192.168.10.2:8006/`
+- [ ] Can login to web console as `dustin@pam`
 - [ ] Can SSH as non-root user with key authentication
 - [ ] Cannot SSH as root with password
 - [ ] `sudo apt update` works without 401 errors
@@ -157,7 +181,8 @@ sudo systemctl restart sshd
 ## Accessing Proxmox
 
 - **Web Console**: https://192.168.10.2:8006/
-  - Login: `root@pam` with root password
+  - Login: `dustin@pam` with Linux password (preferred for audit trail)
+  - Backup: `root@pam` with root password
 - **SSH**: `ssh dustin@192.168.10.2`
   - Use sudo for administrative tasks
 
