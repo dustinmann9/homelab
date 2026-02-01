@@ -170,7 +170,7 @@ To issue a server certificate, you'll use the Intermediate CA. A script will be 
 
 Example:
 ```bash
-./scripts/generate-server-cert.sh proxmox proxmox.homelab.local 192.168.1.10
+./scripts/generate-server-cert.sh proxmox pve.home 192.168.10.2
 ```
 
 ## Certificate Inventory

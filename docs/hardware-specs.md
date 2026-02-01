@@ -47,7 +47,7 @@ Details TBD:
 ## Virtualization Platform
 
 - **Platform**: Proxmox VE
-- **Version**: TBD (will be latest stable at time of installation)
+- **Version**: Proxmox VE 8.x (chosen over v9 for stability)
 
 ## Migration Notes
 

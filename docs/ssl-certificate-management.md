@@ -18,10 +18,10 @@ This homelab uses a private Certificate Authority (CA) infrastructure to issue S
 Root CA (mannsclann-homelab-root-ca)
   └── Intermediate CA (mannsclann-homelab-intermediate-ca)
       └── Server/Service Certificates
-          ├── proxmox.homelab.local
-          ├── pihole.homelab.local
-          ├── storage.homelab.local
-          ├── webserver.homelab.local
+          ├── pve.home
+          ├── pihole.home
+          ├── storage.home
+          ├── webserver.home
           └── ... other services
 ```
 
@@ -104,9 +104,9 @@ certs/*/private/
 
 ### Server Certificates
 
-- **Common Name (CN)**: service.homelab.local
+- **Common Name (CN)**: service.home
 - **Subject Alternative Names (SAN)**:
-  - DNS:service.homelab.local
+  - DNS:service.home
   - DNS:service
   - IP:192.168.x.x (if needed)
 - **Validity**: 825 days (maximum per modern standards)
@@ -168,7 +168,7 @@ certs/*/private/
 
 **Example**:
 ```bash
-./scripts/generate-server-cert.sh proxmox.homelab.local 192.168.1.10
+./scripts/generate-server-cert.sh pve.home 192.168.10.2
 ```
 
 **Output**:
@@ -334,18 +334,18 @@ Firefox uses its own certificate store:
 
 ### Planned Certificates
 
-1. **Proxmox Host**: `proxmox.homelab.local`
-2. **Pi-hole**: `pihole.homelab.local`
-3. **Web Server**: `webserver.homelab.local`, `www.homelab.local`
-4. **Network Storage**: `storage.homelab.local`
-5. **Network Monitor**: `monitor.homelab.local`
+1. **Proxmox Host**: `pve.home`
+2. **Pi-hole**: `pihole.home`
+3. **Web Server**: `webserver.home`, `www.home`
+4. **Network Storage**: `storage.home`
+5. **Network Monitor**: `monitor.home`
 
 ### Certificate Inventory Template
 
 | Service | Common Name | SANs | Issued Date | Expiry Date | Serial | Status |
 |---------|-------------|------|-------------|-------------|--------|--------|
-| Proxmox | proxmox.homelab.local | IP:192.168.1.10 | TBD | TBD | TBD | Pending |
-| Pi-hole | pihole.homelab.local | IP:192.168.1.11 | TBD | TBD | TBD | Pending |
+| Proxmox | pve.home | IP:192.168.10.2 | TBD | TBD | TBD | Pending |
+| Pi-hole | pihole.home | IP:192.168.10.8 | TBD | TBD | TBD | Pending |
 
 ## Tools and Software
 
