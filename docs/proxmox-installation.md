@@ -170,9 +170,55 @@ sudo pveum aclmod / -user dustin@pam -role Administrator
 
 **Note**: Root login remains enabled as a recovery option, but use `dustin@pam` for daily administration to maintain an audit trail of actions.
 
-## Step 7: Verify Installation
+## Step 7: Configure SSL Certificate
 
-- [ ] Can access web console at `https://192.168.10.2:8006/`
+Replace the self-signed certificate with one signed by the homelab CA.
+
+### Generate certificate
+
+From your workstation (in the homelab repo):
+
+```bash
+./scripts/generate-server-cert.sh proxmox pve.home 192.168.10.2
+```
+
+### Deploy to Proxmox
+
+Copy certificate files to Proxmox:
+
+```bash
+scp certs/services/proxmox/proxmox.key dustin@pve.home:/tmp/
+scp certs/services/proxmox/proxmox-fullchain.crt dustin@pve.home:/tmp/
+```
+
+On Proxmox, install the certificates:
+
+```bash
+# Backup existing certs
+sudo cp /etc/pve/local/pve-ssl.key /etc/pve/local/pve-ssl.key.bak
+sudo cp /etc/pve/local/pve-ssl.pem /etc/pve/local/pve-ssl.pem.bak
+
+# Install new certs
+sudo cp /tmp/proxmox.key /etc/pve/local/pve-ssl.key
+sudo cp /tmp/proxmox-fullchain.crt /etc/pve/local/pve-ssl.pem
+
+# Clean up temp files
+rm /tmp/proxmox.key /tmp/proxmox-fullchain.crt
+
+# Restart proxy service
+sudo systemctl restart pveproxy
+```
+
+### Verify certificate
+
+Access `https://pve.home:8006` and verify the certificate shows "Mannsclann Homelab" as the issuer.
+
+**Note**: Clients must trust the Root CA for the certificate to be trusted (see [ssl-certificate-management.md](ssl-certificate-management.md)).
+
+## Step 8: Verify Installation
+
+- [ ] Can access web console at `https://pve.home:8006/`
+- [ ] SSL certificate is trusted (no browser warnings)
 - [ ] Can login to web console as `dustin@pam`
 - [ ] Can SSH as non-root user with key authentication
 - [ ] Cannot SSH as root with password
@@ -180,14 +226,13 @@ sudo pveum aclmod / -user dustin@pam -role Administrator
 
 ## Accessing Proxmox
 
-- **Web Console**: https://192.168.10.2:8006/
+- **Web Console**: https://pve.home:8006/
   - Login: `dustin@pam` with Linux password (preferred for audit trail)
   - Backup: `root@pam` with root password
-- **SSH**: `ssh dustin@192.168.10.2`
+- **SSH**: `ssh dustin@pve.home`
   - Use sudo for administrative tasks
 
 ## Next Steps
 
 - Configure storage (see [vm-architecture.md](vm-architecture.md))
-- Set up SSL certificates (see [ssl-certificate-management.md](ssl-certificate-management.md))
 - Create VMs as outlined in project plan
