@@ -85,3 +85,7 @@ homelab/
 3. **Applications**: Web Server VM, SSL/TLS setup
 4. **Monitoring**: Network monitoring and parental controls
 5. **Optional**: Ubuntu Dev VM if needed
+
+## TODO
+
+- [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
