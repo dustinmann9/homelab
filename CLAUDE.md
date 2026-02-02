@@ -15,7 +15,7 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 | VM | vCPU | RAM | Priority | Status |
 |----|------|-----|----------|--------|
-| Web Server | 2 | 6 GB | High | Planned |
+| Recipes Server | 2 | 6 GB | High | Documented (VM 101) |
 | Pi-hole | 1 | 2 GB | High | Running (CT 100) |
 | Network Storage | 2 | 6 GB | High | Planned |
 | Network Monitor | 1 | 4 GB | Medium | Planned |
@@ -45,7 +45,7 @@ Services use `*.home` format (not `.local` which conflicts with macOS mDNS):
 - `pve.home`
 - `pihole.home`
 - `storage.home`
-- `webserver.home`
+- `recipes.home`
 - `monitor.home`
 
 ## Directory Structure
@@ -76,13 +76,15 @@ homelab/
 - `docs/ssl-certificate-management.md` - Complete SSL/TLS strategy
 - `docs/vm-architecture.md` - VM resource allocation and planning
 - `docs/hardware-specs.md` - Server hardware details
+- `docs/vlan-network-setup.md` - VLAN configuration for DMZ isolation
+- `docs/webserver-vm-setup.md` - Recipes server VM setup guide
 - `certs/README.md` - CA infrastructure status and usage
 
 ## Implementation Phases
 
 1. **Foundation**: Proxmox install, RAID5 config, networking
 2. **Core Services**: Pi-hole, Network Storage, data migration
-3. **Applications**: Web Server VM, SSL/TLS setup
+3. **Applications**: Recipes Server VM (documented), SSL/TLS setup
 4. **Monitoring**: Network monitoring and parental controls
 5. **Optional**: Ubuntu Dev VM if needed
 

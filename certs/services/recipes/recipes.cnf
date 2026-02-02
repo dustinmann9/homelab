@@ -30,4 +30,4 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = recipes.home
 DNS.2 = recipes
-IP.1 = 192.168.10.2
+IP.1 = 192.168.20.10
