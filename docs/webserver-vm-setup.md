@@ -471,6 +471,124 @@ sudo apt install -y python3-pip python3-venv
 python3 --version
 ```
 
+## Phase 9: Recipe Book API Deployment
+
+The Recipe Book API is a Spring Boot application that serves as the backend for the recipes web app.
+
+### Prerequisites
+
+- Java 21 (installed via setup script)
+- JAR file built from `recipe-book-api` project
+- SQLite database file
+
+### Automated Setup
+
+A setup script is available in the homelab project:
+
+```bash
+# From workstation - upload and run setup script
+scp scripts/setup-recipe-book-api.sh dustin@192.168.10.20:/tmp/
+ssh dustin@192.168.10.20 "sudo /tmp/setup-recipe-book-api.sh"
+```
+
+The script:
+1. Installs Java 21
+2. Creates `/opt/recipe-book` directory and `recipeapp` user
+3. Creates systemd service (`recipe-book.service`)
+4. Adds API proxy block to nginx config (proxies `/api/` to port 9002)
+
+### Build and Deploy JAR
+
+On your workstation:
+
+```bash
+# Build the JAR
+cd /path/to/recipe-book/recipe-book-api
+mvn clean package -DskipTests
+
+# Upload JAR and database
+scp target/recipe-book-api-*.jar dustin@192.168.10.20:/tmp/recipe-book-api.jar
+scp sqlite.db dustin@192.168.10.20:/tmp/sqlite.db
+```
+
+On the server:
+
+```bash
+# Move files to app directory
+sudo mv /tmp/recipe-book-api.jar /opt/recipe-book/
+sudo mv /tmp/sqlite.db /opt/recipe-book/
+
+# Set ownership
+sudo chown recipeapp:recipeapp /opt/recipe-book/*
+
+# Create images directory
+sudo mkdir -p /data/recipe-book/image-repo
+sudo chown recipeapp:recipeapp /data/recipe-book/image-repo
+```
+
+### Configure Spring Profiles
+
+Edit the systemd service to set Spring profiles:
+
+```bash
+sudo nano /etc/systemd/system/recipe-book.service
+```
+
+Ensure the Environment line is set:
+
+```ini
+Environment="SPRING_PROFILES_ACTIVE=prod,sqlite"
+```
+
+### Start the Service
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start recipe-book
+sudo systemctl enable recipe-book
+sudo systemctl status recipe-book
+```
+
+### Verify Deployment
+
+```bash
+# Check service is running
+sudo systemctl status recipe-book
+
+# Test API directly
+curl -s http://localhost:9002/api/menuitems | head -20
+
+# Test through nginx
+curl -sk https://recipes.home/api/menuitems | head -20
+
+# View logs
+sudo journalctl -u recipe-book -f
+```
+
+### Configuration Reference
+
+| Setting | Value |
+|---------|-------|
+| Profiles | `prod,sqlite` |
+| Port | 9002 |
+| Database | `/opt/recipe-book/sqlite.db` |
+| Images | `/data/recipe-book/image-repo` |
+| Logs | `/opt/recipe-book/recipe-book.log` |
+| Service | `recipe-book.service` |
+
+### Useful Commands
+
+```bash
+# Restart API
+sudo systemctl restart recipe-book
+
+# View logs
+sudo journalctl -u recipe-book -f
+
+# Check what port is in use
+sudo ss -tlnp | grep java
+```
+
 ## Verification Checklist
 
 ```bash
@@ -522,11 +640,12 @@ Or add to `/etc/hosts`:
 ## Current Status
 
 - **VM**: Running on LAN (192.168.10.20)
+- **Recipe Book API**: Running on port 9002, accessible at https://recipes.home/api/
 - **VLAN isolation**: Pending - requires switch/router trunk port configuration
 
 ## Next Steps
 
-1. Deploy the recipes application
-2. Configure VLAN 20 for DMZ isolation (see Task #5)
+1. Deploy the recipes frontend (React UI)
+2. Configure VLAN 20 for DMZ isolation
 3. Set up monitoring
-4. Configure backups for `/var/www` and nginx configs
+4. Configure backups for `/opt/recipe-book` and nginx configs
