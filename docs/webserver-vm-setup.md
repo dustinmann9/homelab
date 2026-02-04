@@ -495,7 +495,9 @@ The script:
 1. Installs Java 21
 2. Creates `/opt/recipe-book` directory and `recipeapp` user
 3. Creates systemd service (`recipe-book.service`)
-4. Adds API proxy block to nginx config (proxies `/api/` to port 9002)
+4. Adds nginx proxy blocks:
+   - `/api/` → port 9002 (REST API)
+   - `/images/` → port 9002 (image serving via Spring Boot)
 
 ### Build and Deploy JAR
 

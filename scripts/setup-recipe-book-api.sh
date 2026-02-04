@@ -69,7 +69,7 @@ cp /etc/nginx/sites-available/recipes.home /etc/nginx/sites-available/recipes.ho
 if grep -q "location /api/" /etc/nginx/sites-available/recipes.home; then
     echo "   API proxy block already exists in nginx config"
 else
-    # Insert API proxy block before the existing location / block
+    # Insert API and images proxy blocks before the existing location / block
     sed -i '/location \/ {/i\
     # API proxy\
     location /api/ {\
@@ -80,6 +80,16 @@ else
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\
         proxy_set_header X-Forwarded-Proto $scheme;\
         proxy_read_timeout 90;\
+    }\
+\
+    # Images served by Spring Boot\
+    location /images/ {\
+        proxy_pass http://127.0.0.1:9002;\
+        proxy_http_version 1.1;\
+        proxy_set_header Host $host;\
+        proxy_set_header X-Real-IP $remote_addr;\
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\
+        proxy_set_header X-Forwarded-Proto $scheme;\
     }\
 ' /etc/nginx/sites-available/recipes.home
     echo "   Added API proxy block to nginx config"
