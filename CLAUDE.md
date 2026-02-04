@@ -15,7 +15,7 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 | VM | vCPU | RAM | Priority | Status |
 |----|------|-----|----------|--------|
-| Recipes Server | 2 | 6 GB | High | Documented (VM 101) |
+| Recipes Server | 2 | 6 GB | High | Running (VM 101, 192.168.10.20) |
 | Pi-hole | 1 | 2 GB | High | Running (CT 100) |
 | Network Storage | 2 | 6 GB | High | Planned |
 | Network Monitor | 1 | 4 GB | Medium | Planned |
