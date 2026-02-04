@@ -91,3 +91,4 @@ homelab/
 ## TODO
 
 - [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
+- [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TP-Link TL-SG108PE switch and TP-Link DSR-250 router (see docs/vlan-network-setup.md)
