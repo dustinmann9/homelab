@@ -23,19 +23,25 @@
 - **Type**: Magnetic HDD
 - **Quantity**: 4 drives
 - **Capacity**: 1 TB each (4 TB total raw capacity)
-- **Configuration**: RAID5
-- **Usable Capacity**: ~3 TB (accounting for RAID5 parity)
-- **Notes**: Currently part of desktop RAID5 setup, will be migrated to server
+- **Configuration**: RAID5 (mdadm software RAID)
+- **Usable Capacity**: ~2.73 TB
+- **Mount Point**: `/data`
+- **Filesystem**: ext4
+- **Status**: Operational
 
 ### RAID Configuration
 
 **RAID5 Details:**
-- **Drives**: 4 x 1TB HDDs
+- **Drives**: 4 x 1TB HDDs (`/dev/sda1`, `/dev/sdb1`, `/dev/sdc1`, `/dev/sdd1`)
+- **Array Device**: `/dev/md0`
+- **Array UUID**: `a61c0a48:4efa2e85:ca4c0148:94dcbc02`
+- **Filesystem UUID**: `63e2b5f9-7259-4333-83d3-4fd06a278773`
 - **Parity**: Single parity drive equivalent
-- **Usable Space**: 3 TB
+- **Usable Space**: 2.73 TB
 - **Fault Tolerance**: Can tolerate 1 drive failure
 - **Performance**: Good read performance, moderate write performance
 - **Use Case**: Network storage and backup
+- **Original Creation**: August 11, 2012 (migrated from `server2`)
 
 ## Network
 
@@ -51,11 +57,13 @@ Details TBD:
 
 ## Migration Notes
 
-The 4 x 1TB RAID5 array is currently in use on desktop and will need to be:
-1. Backed up before migration
-2. Physically moved to the server
-3. Imported/reconfigured in Proxmox
-4. Verified for data integrity
+The 4 x 1TB RAID5 array was successfully migrated from `server2` to Proxmox:
+1. ~~Backed up before migration~~
+2. ~~Physically moved to the server~~
+3. ~~Imported/reconfigured in Proxmox~~
+4. ~~Verified for data integrity~~
+
+**Migration completed**: February 2026. See [raid-storage-setup.md](raid-storage-setup.md) for setup details.
 
 ## Future Expansion Considerations
 

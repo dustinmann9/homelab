@@ -76,6 +76,7 @@ homelab/
 - `docs/ssl-certificate-management.md` - Complete SSL/TLS strategy
 - `docs/vm-architecture.md` - VM resource allocation and planning
 - `docs/hardware-specs.md` - Server hardware details
+- `docs/raid-storage-setup.md` - RAID5 array setup and management
 - `docs/vlan-network-setup.md` - VLAN configuration for DMZ isolation
 - `docs/webserver-vm-setup.md` - Recipes server VM setup guide
 - `certs/README.md` - CA infrastructure status and usage
@@ -92,3 +93,6 @@ homelab/
 
 - [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
 - [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TP-Link TL-SG108PE switch and TP-Link DSR-250 router (see docs/vlan-network-setup.md)
+- [ ] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
+- [ ] Set up NFS share on /data/shared for VMs/containers
+- [ ] Configure /data/backups as Proxmox Directory storage for VM backups
