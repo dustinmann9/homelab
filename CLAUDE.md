@@ -93,6 +93,7 @@ homelab/
 
 - [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
 - [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TP-Link TL-SG108PE switch and TP-Link DSR-250 router (see docs/vlan-network-setup.md)
-- [ ] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
+- [x] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
 - [ ] Set up NFS share on /data/shared for VMs/containers
 - [ ] Configure /data/backups as Proxmox Directory storage for VM backups
+- [ ] Sync Obsidian notes with AI and GitHub
