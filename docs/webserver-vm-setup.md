@@ -10,7 +10,7 @@ Complete guide for setting up an internet-facing web server VM with nginx revers
 | Hostname | recipes |
 | OS | Debian 13 (Trixie) |
 | vCPU | 2 |
-| RAM | 6 GB |
+| RAM | 3 GB |
 | Disk | 50 GB (SSD) |
 | IP Address | 192.168.10.20/24 (LAN) or 192.168.20.10/24 (DMZ) |
 | Domain | recipes.home |
@@ -58,7 +58,7 @@ On Proxmox web UI:
    - Cores: 2
    - Type: host (or x86-64-v2-AES for compatibility)
 7. **Memory**:
-   - Memory: 6144 MB
+   - Memory: 3072 MB
    - Minimum memory: 2048 MB (for ballooning)
 8. **Network**:
    - Bridge: vmbr0
@@ -71,7 +71,7 @@ On Proxmox web UI:
 qm create 101 \
   --name recipes \
   --cores 2 \
-  --memory 6144 \
+  --memory 3072 \
   --balloon 2048 \
   --net0 virtio,bridge=vmbr0 \
   --scsi0 local-lvm:50,format=raw \
@@ -526,6 +526,53 @@ sudo chown recipeapp:recipeapp /opt/recipe-book/*
 # Create images directory
 sudo mkdir -p /data/recipe-book/image-repo
 sudo chown recipeapp:recipeapp /data/recipe-book/image-repo
+```
+
+### JVM Memory Tuning
+
+The setup script configures explicit JVM heap limits sized for a 3 GB VM. Without
+these, Java 21's default ergonomics would auto-size the heap to 25% of available
+RAM — which works, but leaves the JVM free to grow unpredictably and starve the OS.
+
+**Memory budget for a 3 GB VM:**
+
+| Component | Allocation |
+|-----------|-----------|
+| OS + nginx | ~600 MB |
+| JVM heap (`-Xmx512m`) | 512 MB |
+| JVM Metaspace (`-XX:MaxMetaspaceSize=256m`) | 256 MB |
+| JVM threads + native overhead | ~200 MB |
+| Headroom / filesystem cache | ~400 MB |
+| **Total** | **~2 GB active, 1 GB balloon headroom** |
+
+**Flags set in the systemd service:**
+
+| Flag | Value | Reason |
+|------|-------|--------|
+| `-Xms256m` | 256 MB initial heap | Don't pre-allocate; let heap grow on demand |
+| `-Xmx512m` | 512 MB max heap | Cap growth; sufficient for SQLite recipe API |
+| `-XX:MaxMetaspaceSize=256m` | 256 MB metaspace cap | Default is unlimited; Spring Boot uses ~150–200 MB |
+| `-XX:+UseG1GC` | G1 garbage collector | Default in Java 21; best for low-pause server workloads |
+| `-XX:+HeapDumpOnOutOfMemoryError` | Heap dump on OOM | Write dump to disk for post-mortem analysis |
+| `-XX:HeapDumpPath=...` | `/opt/recipe-book/heap-dump.hprof` | Dump destination |
+
+**Updating the live service** (if the VM is already running):
+
+```bash
+sudo systemctl edit --full recipe-book
+# Edit the ExecStart line to match the flags above, then:
+sudo systemctl daemon-reload
+sudo systemctl restart recipe-book
+sudo systemctl status recipe-book
+```
+
+To verify heap settings took effect:
+```bash
+# Find the Java PID
+sudo ss -tlnp | grep java
+
+# Check effective JVM flags (requires same user or root)
+sudo jcmd <PID> VM.flags | grep -E "Xmx|Xms|Metaspace"
 ```
 
 ### Configure Spring Profiles

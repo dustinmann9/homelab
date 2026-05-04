@@ -41,7 +41,14 @@ Type=simple
 User=recipeapp
 Group=recipeapp
 WorkingDirectory=/opt/recipe-book
-ExecStart=/usr/bin/java -jar /opt/recipe-book/recipe-book-api.jar
+ExecStart=/usr/bin/java \
+  -Xms256m \
+  -Xmx512m \
+  -XX:MaxMetaspaceSize=256m \
+  -XX:+UseG1GC \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/opt/recipe-book/heap-dump.hprof \
+  -jar /opt/recipe-book/recipe-book-api.jar
 Restart=on-failure
 RestartSec=10
 
