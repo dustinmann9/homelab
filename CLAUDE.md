@@ -15,10 +15,11 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 | VM | vCPU | RAM | Priority | Status |
 |----|------|-----|----------|--------|
-| Recipes Server | 2 | 6 GB | High | Running (VM 101, 192.168.10.20, API deployed) |
-| Pi-hole | 1 | 2 GB | High | Running (CT 100) |
+| Recipes Server | 2 | 3 GB | High | Running (VM 101, 192.168.10.20, API deployed) |
+| Pi-hole | 1 | 2 GB | High | Running (CT 100, 192.168.10.8) |
 | Network Storage | 2 | 6 GB | High | Planned |
-| Network Monitor | 1 | 4 GB | Medium | Planned |
+| Network Sensor | 2 | 4 GB | Medium | Planned (VM 102, 192.168.10.30) |
+| Elastic Stack | 2 | 10 GB | Medium | Planned (VM 103, 192.168.10.31) |
 | Ubuntu Dev | 2 | 4 GB | Low | Optional |
 
 ## Certificate Authority Infrastructure
@@ -79,6 +80,9 @@ homelab/
 - `docs/raid-storage-setup.md` - RAID5 array setup and management
 - `docs/vlan-network-setup.md` - VLAN configuration for DMZ isolation
 - `docs/webserver-vm-setup.md` - Recipes server VM setup guide
+- `docs/nsm-architecture.md` - NSM two-VM architecture overview (Sensor + Elastic Stack)
+- `docs/network-sensor-setup.md` - Suricata, Zeek, and Filebeat setup (VM 102)
+- `docs/elastic-stack-setup.md` - Elasticsearch and Kibana setup (VM 103)
 - `certs/README.md` - CA infrastructure status and usage
 
 ## Implementation Phases
@@ -91,9 +95,42 @@ homelab/
 
 ## TODO
 
+### Networking
+- [ ] Terminate RJ45 connectors on spare cables between router closet and switch room
+- [ ] Connect Proxmox eno1 (Atheros AR8151) to TL-SG108PE switch; disconnect from router
+- [ ] Create vmbr1 on Proxmox bridged to eno1; move sensor VM net1 from vmbr0 to vmbr1
+- [ ] Find TL-SG108PE switch IP address (not yet known; check router ARP table or device label)
+- [ ] Configure SPAN port on TL-SG108PE: mirror router uplink port → Proxmox eno1 port
+- [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TL-SG108PE and DSR-250 (see docs/vlan-network-setup.md)
+- [ ] Design and document full VLAN layout (VLAN 10 trusted, 20 DMZ, 30 IoT/cameras, 40 kids/guest) and SPAN architecture — create docs/network-design.md
 - [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
-- [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TP-Link TL-SG108PE switch and TP-Link DSR-250 router (see docs/vlan-network-setup.md)
-- [x] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
+- [ ] Long-term: move modem/router to switch room (coax already run); this simplifies all network topology
+
+### DNS
+- [x] Configure VMs to use Pi-hole (192.168.10.8) for DNS to resolve *.home local records — update /etc/resolv.conf on VM 101, 102, 103
+- [ ] NOTE: Do NOT configure router to use Pi-hole as upstream DNS — reliability requirement, wife must be able to restore network without homelab access
+
+### VM Maintenance
+- [x] Enable unattended-upgrades on VM 101 (recipes), VM 102 (sensor), and VM 103 (elastic) — security patches only; exclude elasticsearch/kibana packages on VM 103
+- [x] Disable swap on all VMs: `sudo swapoff -a && sudo sed -i '/swap/d' /etc/fstab` — applies to VM 101 (Recipes), VM 103 (Elastic), VM 102 (Sensor)
+- [x] Configure SSH key auth on VM 103 (elastic) — copy Mac public key to ~/.ssh/authorized_keys
+
+### Notifications
+- [ ] Configure Gmail SMTP relay on all VMs for system notifications (alerts, unattended-upgrade results, RAID events) — see docs/email-relay.md if exists
+
+### NSM Pipeline
+- [ ] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
+- [ ] Configure SSL for Kibana (VM 103) using homelab CA: `./scripts/generate-server-cert.sh elastic elastic.home 192.168.10.31`
+
+### Documentation
+- [ ] Write docs/nsm-design-rationale.md — explain NSM tooling choices (Suricata vs Snort, Zeek, ELK stack), trade-offs considered, and why this architecture was chosen
+- [ ] Create docs/network-design.md — full network layout diagram with SPAN and VLAN configurations
+
+### Storage
 - [ ] Set up NFS share on /data/shared for VMs/containers
 - [ ] Configure /data/backups as Proxmox Directory storage for VM backups
+
+### Other
+- [x] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
 - [ ] Sync Obsidian notes with AI and GitHub
+- [ ] Self-hosted password manager — consider Vaultwarden (lightweight Bitwarden-compatible server, LXC container)
