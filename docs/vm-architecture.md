@@ -106,47 +106,75 @@ With 4 cores and 32 GB RAM available, resources need to be carefully allocated a
 - Consider direct disk passthrough vs. shared mount
 - Backup strategy for RAID data
 
-### 5. Network Monitoring / Parental Controls
+### 5. Network Sensor (NSM)
 
-**Purpose**: Monitor network traffic for inappropriate internet usage
+**Purpose**: Passive IDS/protocol analysis — detects suspicious and inappropriate
+traffic via SPAN port mirroring from the TL-SG108PE switch.
 
-**Specifications (Initial):**
-- **OS**: Linux-based
-- **vCPU**: 1-2 cores
-- **RAM**: 2-4 GB
-- **Storage**: 30-50 GB (SSD, for traffic logs)
-- **Network**: May need promiscuous mode or port mirroring
+**Specifications:**
+- **VM ID**: 102
+- **IP**: 192.168.10.30
+- **OS**: Debian 13 (Trixie)
+- **vCPU**: 2 cores
+- **RAM**: 4 GB
+- **Storage**: 60 GB SSD
+- **Network**: eth0 (management, 192.168.10.30) + eth1 (monitor, no IP, promiscuous)
 - **Priority**: Medium
 
-**Potential Solutions:**
-- **ntopng**: Network traffic analysis
-- **Suricata**: Intrusion detection/prevention
-- **pfSense/OPNsense**: Full-featured firewall (if doing router duties)
-- **OpenDNS/Cloudflare Gateway**: Cloud-based filtering (simpler)
+**Software Stack:**
+- **Suricata** — signature-based IDS with Emerging Threats Open rules
+- **Zeek** — protocol analyzer, generates structured conn/dns/http/ssl/tls logs
+- **Filebeat** — ships EVE JSON and Zeek logs to Elastic Stack VM
 
 **Notes:**
-- Requirements depend on chosen solution
-- May need router configuration for traffic mirroring
-- Privacy considerations for monitoring
-- Age-appropriate content filtering
-- Reporting and alerting capabilities
+- Entirely passive — cannot affect network connectivity
+- SPAN source: switch port 1 (router uplink); SPAN destination: port 8
+- See `docs/network-sensor-setup.md` for full setup guide
+- See `docs/nsm-architecture.md` for system design
+
+### 6. Elastic Stack (NSM)
+
+**Purpose**: Log storage, indexing, dashboards, and alerting for the NSM pipeline.
+
+**Specifications:**
+- **VM ID**: 103
+- **IP**: 192.168.10.31
+- **OS**: Debian 13 (Trixie)
+- **vCPU**: 2 cores
+- **RAM**: 10 GB
+- **Storage**: 100 GB SSD (log retention)
+- **Network**: eth0 only (management)
+- **Priority**: Medium
+
+**Software Stack:**
+- **Elasticsearch** — indexes all Suricata and Zeek logs (JVM heap: 4 GB)
+- **Kibana** — dashboards, Discover search, alerting rules
+
+**Notes:**
+- Elasticsearch 8.x with TLS and authentication enabled by default
+- ILM policy: roll at 10 GB or 7 days, delete after 30 days
+- Pre-built Suricata and Zeek dashboards loaded via Filebeat setup
+- See `docs/elastic-stack-setup.md` for full setup guide
 
 ## Resource Allocation Summary
 
-| VM | vCPU | RAM | Storage (SSD) | Storage (HDD) | Priority |
-|----|------|-----|---------------|---------------|----------|
-| Proxmox Host | 1 | 4 GB | 30 GB | - | Critical |
-| Web Server | 2 | 6 GB | 50 GB | - | High |
-| Ubuntu Dev (Optional) | 2 | 4 GB | 50 GB | - | Low |
-| Pi-hole | 1 | 2 GB | 20 GB | - | High |
-| Network Storage | 2 | 6 GB | 30 GB | 3 TB | High |
-| Network Monitor | 1 | 4 GB | 40 GB | - | Medium |
-| **Total** | **9** | **26 GB** | **220 GB** | **3 TB** | |
+| VM | ID | IP | vCPU | RAM | Storage (SSD) | Storage (HDD) | Status |
+|----|----|----|------|-----|---------------|---------------|--------|
+| Proxmox Host | — | 192.168.10.2 | 1 | 4 GB | 30 GB | — | Running |
+| Pi-hole | CT 100 | 192.168.10.8 | 1 | 2 GB | 20 GB | — | Running |
+| Recipes Server | VM 101 | 192.168.10.20 | 2 | 3 GB | 50 GB | — | Running |
+| Network Sensor | VM 102 | 192.168.10.30 | 2 | 4 GB | 60 GB | — | Planned |
+| Elastic Stack | VM 103 | 192.168.10.31 | 2 | 10 GB | 100 GB | — | Planned |
+| Network Storage | VM 104 | 192.168.10.40 | 2 | 2 GB | 30 GB | 3 TB | Planned |
+| Ubuntu Dev (Optional) | VM 105 | TBD | 2 | 4 GB | 50 GB | — | Deferred |
+| **Total (excl. Dev)** | | | **10** | **25 GB** | **290 GB** | **3 TB** | |
 
 **Notes on Allocation:**
-- vCPU count shows oversubscription (9 vCPUs on 4 cores) - this is normal and acceptable
-- RAM allocation is within limits (26 GB allocated, 6 GB for host)
-- Ubuntu Dev VM may not be implemented
+- Total RAM with all planned VMs (excl. Dev): 25 GB against 32 GB physical — 7 GB comfortable headroom
+- Recipes Server reduced from 6 GB to 3 GB; JVM heap explicitly capped at 512m via service flags
+- Network Storage reduced from 4 GB to 2 GB; basic Samba/NFS doesn't require more
+- Ubuntu Dev VM deferred — could be added later using the freed headroom
+- vCPU oversubscription (10 vCPUs on 4 cores) is normal and acceptable for this workload mix
 
 ## Implementation Phases
 
