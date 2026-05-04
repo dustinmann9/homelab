@@ -116,7 +116,7 @@ homelab/
 - [x] Configure SSH key auth on VM 103 (elastic) — copy Mac public key to ~/.ssh/authorized_keys
 
 ### Notifications
-- [ ] Fix mdadm monitor on PVE — service is masked, RAID failure emails are currently broken (CRITICAL)
+- [x] Fix mdadm monitor on PVE — service masked by design on Proxmox; monitor was already running (PID via boot). Fixed duplicate relayhost entry in postfix main.cf that could have silently dropped emails.
 - [ ] Configure postfix relay on VM 101, 102, 103 — match PVE host config (already working on PVE)
 - [ ] Enable fail2ban on PVE and all VMs — email on SSH brute force and Proxmox web UI failures
 - [ ] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail
