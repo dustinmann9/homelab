@@ -116,7 +116,15 @@ homelab/
 - [x] Configure SSH key auth on VM 103 (elastic) — copy Mac public key to ~/.ssh/authorized_keys
 
 ### Notifications
-- [ ] Configure Gmail SMTP relay on all VMs for system notifications (alerts, unattended-upgrade results, RAID events) — see docs/email-relay.md if exists
+- [ ] Fix mdadm monitor on PVE — service is masked, RAID failure emails are currently broken (CRITICAL)
+- [ ] Configure postfix relay on VM 101, 102, 103 — match PVE host config (already working on PVE)
+- [ ] Enable fail2ban on PVE and all VMs — email on SSH brute force and Proxmox web UI failures
+- [ ] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail
+- [ ] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
+- [ ] Add VM health check cron on PVE — email if CT 100, VM 101/102/103 unexpectedly stop
+- [ ] Suricata alert emails on VM 102 — simple daily cron now; migrate to Kibana alerting once VM 103 is up
+- [ ] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
+- [ ] See docs/email-relay.md for full setup guide and priority order
 
 ### NSM Pipeline
 - [ ] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
