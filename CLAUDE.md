@@ -139,6 +139,9 @@ homelab/
 - [ ] Set up NFS share on /data/shared for VMs/containers
 - [ ] Configure /data/backups as Proxmox Directory storage for VM backups
 
+### Certificates
+- [ ] Install Mannsclann Homelab Root CA on iPad — needed to trust homelab service certs (Proxmox, Pi-hole, etc.) without browser warnings
+
 ### Other
 - [x] Generate data analysis report for migrated files on /data - identify duplicates, large files, old files for potential cleanup
 - [ ] Sync Obsidian notes with AI and GitHub

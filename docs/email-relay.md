@@ -202,14 +202,31 @@ Create `/etc/cron.d/vm-health-check`:
 Create `/usr/local/bin/vm-health-check.sh`:
 ```bash
 #!/bin/bash
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
 MAILTO="dustin.mann9@gmail.com"
-EXPECTED_VMS="100 101 102 103"  # CT 100 (pihole), VM 101, 102, 103
+HOSTNAME=$(hostname)
 
-for vmid in $EXPECTED_VMS; do
-    status=$(qm status $vmid 2>/dev/null | awk '{print $2}' || pct status $vmid 2>/dev/null | awk '{print $2}')
-    if [ "$status" != "running" ]; then
-        echo "VM/CT $vmid is not running (status: $status)" \
-          | mail -s "VM alert: $vmid down on $(hostname)" "$MAILTO"
+# Check all VMs with onboot=1
+qm list | awk "NR>1 {print \$1}" | while read vmid; do
+    if qm config "$vmid" 2>/dev/null | grep -q "^onboot: 1"; then
+        name=$(qm config "$vmid" | awk -F": " "/^name:/ {print \$2}")
+        status=$(qm status "$vmid" | awk "{print \$2}")
+        if [ "$status" != "running" ]; then
+            echo "VM $vmid ($name) is not running (status: ${status:-unknown})" \
+              | mail -s "VM alert: $name ($vmid) down on $HOSTNAME" "$MAILTO"
+        fi
+    fi
+done
+
+# Check all CTs with onboot=1
+pct list | awk "NR>1 {print \$1}" | while read ctid; do
+    if pct config "$ctid" 2>/dev/null | grep -q "^onboot: 1"; then
+        name=$(pct config "$ctid" | awk -F": " "/^hostname:/ {print \$2}")
+        status=$(pct status "$ctid" | awk "{print \$2}")
+        if [ "$status" != "running" ]; then
+            echo "CT $ctid ($name) is not running (status: ${status:-unknown})" \
+              | mail -s "VM alert: $name ($ctid) down on $HOSTNAME" "$MAILTO"
+        fi
     fi
 done
 ```
