@@ -121,7 +121,7 @@ homelab/
 - [x] Enable fail2ban on PVE — sshd and proxmox web UI jails active, emails on ban
 - [x] Enable fail2ban on VMs 101, 102, 103 — SSH jail only
 - [x] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail; short test daily 2am, long test Saturdays 3am
-- [ ] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
+- [x] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
 - [ ] Add VM health check cron on PVE — email if CT 100, VM 101/102/103 unexpectedly stop
 - [ ] Suricata alert emails on VM 102 — simple daily cron now; migrate to Kibana alerting once VM 103 is up
 - [x] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
