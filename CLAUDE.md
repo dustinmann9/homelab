@@ -117,13 +117,13 @@ homelab/
 
 ### Notifications
 - [x] Fix mdadm monitor on PVE — service masked by design on Proxmox; monitor was already running (PID via boot). Fixed duplicate relayhost entry in postfix main.cf that could have silently dropped emails.
-- [ ] Configure postfix relay on VM 101, 102, 103 — match PVE host config (already working on PVE)
+- [x] Configure postfix relay on VM 101, 102, 103 — match PVE host config (already working on PVE)
 - [ ] Enable fail2ban on PVE and all VMs — email on SSH brute force and Proxmox web UI failures
 - [ ] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail
 - [ ] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
 - [ ] Add VM health check cron on PVE — email if CT 100, VM 101/102/103 unexpectedly stop
 - [ ] Suricata alert emails on VM 102 — simple daily cron now; migrate to Kibana alerting once VM 103 is up
-- [ ] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
+- [x] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
 - [ ] See docs/email-relay.md for full setup guide and priority order
 
 ### NSM Pipeline
