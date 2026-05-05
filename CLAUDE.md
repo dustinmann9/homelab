@@ -118,7 +118,8 @@ homelab/
 ### Notifications
 - [x] Fix mdadm monitor on PVE — service masked by design on Proxmox; monitor was already running (PID via boot). Fixed duplicate relayhost entry in postfix main.cf that could have silently dropped emails.
 - [x] Configure postfix relay on VM 101, 102, 103 — match PVE host config (already working on PVE)
-- [ ] Enable fail2ban on PVE and all VMs — email on SSH brute force and Proxmox web UI failures
+- [x] Enable fail2ban on PVE — sshd and proxmox web UI jails active, emails on ban
+- [ ] Enable fail2ban on VMs 101, 102, 103 — SSH jail only
 - [ ] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail
 - [ ] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
 - [ ] Add VM health check cron on PVE — email if CT 100, VM 101/102/103 unexpectedly stop
