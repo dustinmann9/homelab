@@ -122,7 +122,7 @@ homelab/
 - [x] Enable fail2ban on VMs 101, 102, 103 — SSH jail only
 - [x] Enable smartd on PVE — email on SMART pre-failure attributes before drives fail; short test daily 2am, long test Saturdays 3am
 - [x] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
-- [ ] Add VM health check cron on PVE — email if CT 100, VM 101/102/103 unexpectedly stop
+- [x] Add VM health check cron on PVE — emails if any onboot=1 VM/CT stops unexpectedly; runs every 15 min
 - [ ] Suricata alert emails on VM 102 — simple daily cron now; migrate to Kibana alerting once VM 103 is up
 - [x] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
 - [ ] See docs/email-relay.md for full setup guide and priority order
