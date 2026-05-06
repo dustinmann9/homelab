@@ -349,6 +349,22 @@ Create `/etc/cron.d/zeek`:
 
 Stdout is suppressed to avoid hourly cron emails — stderr is kept so crashes still notify.
 
+### zeekctl Mail Configuration
+
+zeekctl has its own built-in mail system independent of cron, configured in
+`/opt/zeek/etc/zeekctl.cfg`. Set the following to avoid inbox noise while
+keeping actionable alerts:
+
+```
+MailTo = dustin.mann9+zeek-sensor@gmail.com
+MailConnectionSummary = 0
+MailHostUpDown = 1
+```
+
+- `MailConnectionSummary = 0` — disables hourly connection summary emails (the main source of noise)
+- `MailHostUpDown = 1` — keeps alerts when Zeek crashes or restarts unexpectedly
+- `MailTo` uses `+zeek-sensor` to distinguish zeekctl alerts from other sensor alerts (fail2ban, disk space) in Gmail filters
+
 ### Make Zeek Start on Boot
 
 ```bash

@@ -12,11 +12,12 @@ VMs 101, 102, 103 need the same postfix relay configured.
 
 Each host sends to a Gmail plus address so inbox filters can route by host:
 
-| Host | MAILTO address |
-|------|---------------|
+| Host / Service | MAILTO address |
+|----------------|---------------|
 | PVE (192.168.10.2) | dustin.mann9+pve@gmail.com |
 | VM 101 Recipes (192.168.10.20) | dustin.mann9+recipes@gmail.com |
 | VM 102 Sensor (192.168.10.30) | dustin.mann9+sensor@gmail.com |
+| VM 102 Zeek (zeekctl built-in mailer) | dustin.mann9+zeek-sensor@gmail.com |
 | VM 103 Elastic (192.168.10.31) | dustin.mann9+elastic@gmail.com |
 
 The SMTP auth credential in `/etc/postfix/sasl/sasl_passwd` remains the base address (`dustin.mann9@gmail.com`) — only the destination changes.
