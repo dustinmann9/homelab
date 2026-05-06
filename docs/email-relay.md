@@ -8,14 +8,27 @@ notifications through Gmail. The PVE host already has postfix relaying through
 
 VMs 101, 102, 103 need the same postfix relay configured.
 
-## Current State (as of 2026-05-04)
+## Email Addressing Convention
 
-| Host | Postfix relay | mdadm monitor | fail2ban | smartd | Notes |
-|------|--------------|---------------|----------|--------|-------|
-| PVE (192.168.10.2) | Working | **Masked/broken** | Inactive | Unknown | Most critical to fix |
-| VM 101 (192.168.10.20) | Not set up | N/A | Inactive | N/A | |
-| VM 102 (192.168.10.30) | Not set up | N/A | Inactive | N/A | Suricata running |
-| VM 103 (192.168.10.31) | Not set up | N/A | Inactive | N/A | Not yet stood up |
+Each host sends to a Gmail plus address so inbox filters can route by host:
+
+| Host | MAILTO address |
+|------|---------------|
+| PVE (192.168.10.2) | dustin.mann9+pve@gmail.com |
+| VM 101 Recipes (192.168.10.20) | dustin.mann9+recipes@gmail.com |
+| VM 102 Sensor (192.168.10.30) | dustin.mann9+sensor@gmail.com |
+| VM 103 Elastic (192.168.10.31) | dustin.mann9+elastic@gmail.com |
+
+The SMTP auth credential in `/etc/postfix/sasl/sasl_passwd` remains the base address (`dustin.mann9@gmail.com`) — only the destination changes.
+
+## Current State (as of 2026-05-05)
+
+| Host | Postfix relay | mdadm monitor | fail2ban | smartd | disk cron | VM health cron |
+|------|--------------|---------------|----------|--------|-----------|----------------|
+| PVE (192.168.10.2) | Working | Working | Active (+pve) | Active (+pve) | Active | Active (every 15 min) |
+| VM 101 (192.168.10.20) | Working | N/A | Active (+recipes) | N/A | Active | N/A |
+| VM 102 (192.168.10.30) | Working | N/A | Active (+sensor) | N/A | Active | N/A |
+| VM 103 (192.168.10.31) | Working | N/A | Active (+elastic) | N/A | Active | N/A |
 
 ## Prerequisites
 
@@ -63,7 +76,7 @@ echo "Test from $(hostname)" | mail -s "postfix test" dustin.mann9@gmail.com
 
 ### Configure aliases (routes root mail to Gmail)
 ```bash
-echo "root: dustin.mann9@gmail.com" | sudo tee -a /etc/aliases
+echo "root: dustin.mann9+<hostname>@gmail.com" | sudo tee -a /etc/aliases
 sudo newaliases
 ```
 
@@ -81,7 +94,7 @@ sudo systemctl status mdadm
 
 Verify the config in `/etc/mdadm/mdadm.conf`:
 ```
-MAILADDR dustin.mann9@gmail.com
+MAILADDR dustin.mann9+pve@gmail.com
 ```
 
 Test by forcing a monitor scan (does not send email unless there's an event, but confirms it runs):
@@ -100,7 +113,7 @@ sudo apt install -y fail2ban
 Create `/etc/fail2ban/jail.local`:
 ```ini
 [DEFAULT]
-destemail = dustin.mann9@gmail.com
+destemail = dustin.mann9+<hostname>@gmail.com
 sender = fail2ban@pve.home
 action = %(action_mwl)s
 bantime = 1h
@@ -151,7 +164,7 @@ Edit `/etc/smartd.conf` — replace default content with:
 ```
 DEVICESCAN -a -o on -S on -n standby,q \
   -W 4,45,55 \
-  -m dustin.mann9@gmail.com \
+  -m dustin.mann9+pve@gmail.com \
   -M exec /usr/share/smartmontools/smartd-runner
 ```
 
@@ -172,7 +185,7 @@ Create `/etc/cron.daily/disk-space-check`:
 ```bash
 #!/bin/bash
 THRESHOLD=85
-MAILTO="dustin.mann9@gmail.com"
+MAILTO="dustin.mann9+<hostname>@gmail.com"
 HOSTNAME=$(hostname)
 
 df -H | grep -vE '^Filesystem|tmpfs|cdrom|udev' | awk '{ print $5 " " $1 " " $6 }' | while read output; do
@@ -203,7 +216,7 @@ Create `/usr/local/bin/vm-health-check.sh`:
 ```bash
 #!/bin/bash
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
-MAILTO="dustin.mann9@gmail.com"
+MAILTO="dustin.mann9+pve@gmail.com"
 HOSTNAME=$(hostname)
 
 # Check all VMs with onboot=1
@@ -246,7 +259,7 @@ Daily cron that emails a summary of new high-severity alerts:
 #!/bin/bash
 # /etc/cron.daily/suricata-alert-summary
 LOGFILE=/var/log/suricata/fast.log
-MAILTO="dustin.mann9@gmail.com"
+MAILTO="dustin.mann9+sensor@gmail.com"
 LAST_RUN=/var/run/suricata-last-alert-check
 
 SINCE=$(cat "$LAST_RUN" 2>/dev/null || echo "0")
@@ -269,7 +282,7 @@ Preferred long-term solution.
 
 Already configured. Add to `/etc/apt/apt.conf.d/50unattended-upgrades` if not present:
 ```
-Unattended-Upgrade::Mail "dustin.mann9@gmail.com";
+Unattended-Upgrade::Mail "dustin.mann9+<hostname>@gmail.com";
 Unattended-Upgrade::MailReport "on-change";
 ```
 
