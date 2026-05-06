@@ -342,14 +342,12 @@ ls /opt/zeek/logs/current/
 
 Zeek's `zeekctl` needs periodic rotation and crash recovery:
 
-```bash
-sudo crontab -e
+Create `/etc/cron.d/zeek`:
+```
+0 * * * * root /opt/zeek/bin/zeekctl cron > /dev/null
 ```
 
-Add:
-```
-0 * * * * /opt/zeek/bin/zeekctl cron
-```
+Stdout is suppressed to avoid hourly cron emails — stderr is kept so crashes still notify.
 
 ### Make Zeek Start on Boot
 

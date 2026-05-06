@@ -18,8 +18,8 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 | Recipes Server | 2 | 3 GB | High | Running (VM 101, 192.168.10.20, API deployed) |
 | Pi-hole | 1 | 2 GB | High | Running (CT 100, 192.168.10.8) |
 | Network Storage | 2 | 6 GB | High | Planned |
-| Network Sensor | 2 | 4 GB | Medium | Planned (VM 102, 192.168.10.30) |
-| Elastic Stack | 2 | 10 GB | Medium | Planned (VM 103, 192.168.10.31) |
+| Network Sensor | 2 | 4 GB | Medium | Running (VM 102, 192.168.10.30) |
+| Elastic Stack | 2 | 10 GB | Medium | Running (VM 103, 192.168.10.31) |
 | Ubuntu Dev | 2 | 4 GB | Low | Optional |
 
 ## Certificate Authority Infrastructure
@@ -128,8 +128,9 @@ homelab/
 - [ ] See docs/email-relay.md for full setup guide and priority order
 
 ### NSM Pipeline
-- [ ] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
+- [x] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
 - [ ] Configure SSL for Kibana (VM 103) using homelab CA: `./scripts/generate-server-cert.sh elastic elastic.home 192.168.10.31`
+- [ ] Validate end-to-end pipeline (Filebeat → Elasticsearch → Kibana) once SPAN port is wired — blocked on RJ45 connectors arriving
 
 ### Documentation
 - [ ] Write docs/nsm-design-rationale.md — explain NSM tooling choices (Suricata vs Snort, Zeek, ELK stack), trade-offs considered, and why this architecture was chosen
