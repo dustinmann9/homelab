@@ -1,0 +1,108 @@
+# =============================================================================
+# Homelab Local Rules — Parental Controls
+# =============================================================================
+# SID ranges:
+#   9001001–9001999  Adult content — DNS query
+#   9002001–9002999  Adult content — TLS SNI (HTTPS)
+#   9003001–9003999  VPN / proxy bypass attempts
+#
+# Pattern: dotprefix prevents substring matches.
+#   content:".pornhub.com" with dotprefix matches pornhub.com and
+#   www.pornhub.com but NOT notpornhub.com.
+#
+# Deploy: copy to /etc/suricata/rules/local.rules on VM 102, then add to
+# rule-files in /etc/suricata/suricata.yaml and reload with:
+#   sudo systemctl reload suricata
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# ADULT CONTENT — Tube sites (DNS)
+# -----------------------------------------------------------------------------
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS pornhub.com"; dns.query; dotprefix; content:".pornhub.com"; nocase; sid:9001001; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS xvideos.com"; dns.query; dotprefix; content:".xvideos.com"; nocase; sid:9001002; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS xnxx.com"; dns.query; dotprefix; content:".xnxx.com"; nocase; sid:9001003; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS xhamster.com"; dns.query; dotprefix; content:".xhamster.com"; nocase; sid:9001004; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS redtube.com"; dns.query; dotprefix; content:".redtube.com"; nocase; sid:9001005; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS youporn.com"; dns.query; dotprefix; content:".youporn.com"; nocase; sid:9001006; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS spankbang.com"; dns.query; dotprefix; content:".spankbang.com"; nocase; sid:9001007; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS beeg.com"; dns.query; dotprefix; content:".beeg.com"; nocase; sid:9001008; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS eporner.com"; dns.query; dotprefix; content:".eporner.com"; nocase; sid:9001009; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS txxx.com"; dns.query; dotprefix; content:".txxx.com"; nocase; sid:9001010; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS tnaflix.com"; dns.query; dotprefix; content:".tnaflix.com"; nocase; sid:9001011; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS drtuber.com"; dns.query; dotprefix; content:".drtuber.com"; nocase; sid:9001012; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS motherless.com"; dns.query; dotprefix; content:".motherless.com"; nocase; sid:9001013; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS tubegalore.com"; dns.query; dotprefix; content:".tubegalore.com"; nocase; sid:9001014; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS empflix.com"; dns.query; dotprefix; content:".empflix.com"; nocase; sid:9001015; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS vporn.com"; dns.query; dotprefix; content:".vporn.com"; nocase; sid:9001016; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS porntrex.com"; dns.query; dotprefix; content:".porntrex.com"; nocase; sid:9001017; rev:1;)
+
+# -----------------------------------------------------------------------------
+# ADULT CONTENT — Creator/subscription platforms (DNS)
+# -----------------------------------------------------------------------------
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS onlyfans.com"; dns.query; dotprefix; content:".onlyfans.com"; nocase; sid:9001030; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS fansly.com"; dns.query; dotprefix; content:".fansly.com"; nocase; sid:9001031; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS manyvids.com"; dns.query; dotprefix; content:".manyvids.com"; nocase; sid:9001032; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS fancentro.com"; dns.query; dotprefix; content:".fancentro.com"; nocase; sid:9001033; rev:1;)
+
+# -----------------------------------------------------------------------------
+# ADULT CONTENT — Premium networks (DNS)
+# -----------------------------------------------------------------------------
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS brazzers.com"; dns.query; dotprefix; content:".brazzers.com"; nocase; sid:9001040; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS bangbros.com"; dns.query; dotprefix; content:".bangbros.com"; nocase; sid:9001041; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS realitykings.com"; dns.query; dotprefix; content:".realitykings.com"; nocase; sid:9001042; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS naughtyamerica.com"; dns.query; dotprefix; content:".naughtyamerica.com"; nocase; sid:9001043; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS digitalplayground.com"; dns.query; dotprefix; content:".digitalplayground.com"; nocase; sid:9001044; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS mofos.com"; dns.query; dotprefix; content:".mofos.com"; nocase; sid:9001045; rev:1;)
+
+# -----------------------------------------------------------------------------
+# ADULT CONTENT — Anime / illustration (DNS)
+# -----------------------------------------------------------------------------
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS nhentai.net"; dns.query; dotprefix; content:".nhentai.net"; nocase; sid:9001050; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS hentaifoundry.com"; dns.query; dotprefix; content:".hentaifoundry.com"; nocase; sid:9001051; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS rule34.xxx"; dns.query; dotprefix; content:".rule34.xxx"; nocase; sid:9001052; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS gelbooru.com"; dns.query; dotprefix; content:".gelbooru.com"; nocase; sid:9001053; rev:1;)
+alert dns any any -> any any (msg:"[PARENTAL] Adult DNS e621.net"; dns.query; dotprefix; content:".e621.net"; nocase; sid:9001054; rev:1;)
+
+# =============================================================================
+# ADULT CONTENT — TLS SNI (HTTPS connections — same sites)
+# =============================================================================
+
+# Tube sites
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS pornhub.com"; tls.sni; dotprefix; content:".pornhub.com"; nocase; sid:9002001; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS xvideos.com"; tls.sni; dotprefix; content:".xvideos.com"; nocase; sid:9002002; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS xnxx.com"; tls.sni; dotprefix; content:".xnxx.com"; nocase; sid:9002003; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS xhamster.com"; tls.sni; dotprefix; content:".xhamster.com"; nocase; sid:9002004; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS redtube.com"; tls.sni; dotprefix; content:".redtube.com"; nocase; sid:9002005; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS youporn.com"; tls.sni; dotprefix; content:".youporn.com"; nocase; sid:9002006; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS spankbang.com"; tls.sni; dotprefix; content:".spankbang.com"; nocase; sid:9002007; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS beeg.com"; tls.sni; dotprefix; content:".beeg.com"; nocase; sid:9002008; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS eporner.com"; tls.sni; dotprefix; content:".eporner.com"; nocase; sid:9002009; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS txxx.com"; tls.sni; dotprefix; content:".txxx.com"; nocase; sid:9002010; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS tnaflix.com"; tls.sni; dotprefix; content:".tnaflix.com"; nocase; sid:9002011; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS drtuber.com"; tls.sni; dotprefix; content:".drtuber.com"; nocase; sid:9002012; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS motherless.com"; tls.sni; dotprefix; content:".motherless.com"; nocase; sid:9002013; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS tubegalore.com"; tls.sni; dotprefix; content:".tubegalore.com"; nocase; sid:9002014; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS empflix.com"; tls.sni; dotprefix; content:".empflix.com"; nocase; sid:9002015; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS vporn.com"; tls.sni; dotprefix; content:".vporn.com"; nocase; sid:9002016; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS porntrex.com"; tls.sni; dotprefix; content:".porntrex.com"; nocase; sid:9002017; rev:1;)
+
+# Creator/subscription platforms
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS onlyfans.com"; tls.sni; dotprefix; content:".onlyfans.com"; nocase; sid:9002030; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS fansly.com"; tls.sni; dotprefix; content:".fansly.com"; nocase; sid:9002031; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS manyvids.com"; tls.sni; dotprefix; content:".manyvids.com"; nocase; sid:9002032; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS fancentro.com"; tls.sni; dotprefix; content:".fancentro.com"; nocase; sid:9002033; rev:1;)
+
+# Premium networks
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS brazzers.com"; tls.sni; dotprefix; content:".brazzers.com"; nocase; sid:9002040; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS bangbros.com"; tls.sni; dotprefix; content:".bangbros.com"; nocase; sid:9002041; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS realitykings.com"; tls.sni; dotprefix; content:".realitykings.com"; nocase; sid:9002042; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS naughtyamerica.com"; tls.sni; dotprefix; content:".naughtyamerica.com"; nocase; sid:9002043; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS digitalplayground.com"; tls.sni; dotprefix; content:".digitalplayground.com"; nocase; sid:9002044; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS mofos.com"; tls.sni; dotprefix; content:".mofos.com"; nocase; sid:9002045; rev:1;)
+
+# Anime / illustration
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS nhentai.net"; tls.sni; dotprefix; content:".nhentai.net"; nocase; sid:9002050; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS hentaifoundry.com"; tls.sni; dotprefix; content:".hentaifoundry.com"; nocase; sid:9002051; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS rule34.xxx"; tls.sni; dotprefix; content:".rule34.xxx"; nocase; sid:9002052; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS gelbooru.com"; tls.sni; dotprefix; content:".gelbooru.com"; nocase; sid:9002053; rev:1;)
+alert tls any any -> any any (msg:"[PARENTAL] Adult TLS e621.net"; tls.sni; dotprefix; content:".e621.net"; nocase; sid:9002054; rev:1;)
