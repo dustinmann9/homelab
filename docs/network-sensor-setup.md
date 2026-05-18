@@ -20,15 +20,23 @@ See `docs/nsm-architecture.md` for the full system design.
 
 ## Switch SPAN Port Configuration
 
-On the TL-SG108PE web interface (`http://<switch-ip>`):
+On the TL-SG108PE web interface (`http://192.168.10.102`):
 
 1. Navigate to **Monitoring → Port Mirroring**
-2. Set **Mirroring Port** (destination): Port 8
-3. Set **Mirrored Port** (source): Port 1 (the port connected to the DSR-250 router)
+2. Set **Mirroring Port** (destination): Port 3 (connected to PVE eno1 / Intel NIC)
+3. Set **Mirrored Port** (source): Port 1 (connected to the DSR-250 router)
 4. Set **Mode**: Ingress/Egress (capture both directions)
 5. Click **Apply**
 
-Connect port 8 on the switch to the second NIC (eth1) on the sensor VM.
+Switch port assignments (actual wiring):
+- Port 1: DSR-250 router uplink (SPAN source)
+- Port 2: EAP access point #1 (PoE)
+- Port 3: PVE eno1 / Intel NIC (SPAN destination)
+- Port 4: EAP access point #2 (PoE)
+- Port 5+: other wired devices
+
+Connect port 3 on the switch to PVE's eno1 (Intel NIC). PVE bridges eno1 into vmbr1,
+which connects to the sensor VM's ens19 capture interface.
 
 ---
 

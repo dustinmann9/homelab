@@ -96,11 +96,11 @@ homelab/
 ## TODO
 
 ### Networking
-- [ ] Terminate RJ45 connectors on spare cables between router closet and switch room
-- [ ] Connect Proxmox eno1 (Atheros AR8151) to TL-SG108PE switch; disconnect from router
-- [ ] Create vmbr1 on Proxmox bridged to eno1; move sensor VM net1 from vmbr0 to vmbr1
-- [ ] Find TL-SG108PE switch IP address (not yet known; check router ARP table or device label)
-- [ ] Configure SPAN port on TL-SG108PE: mirror router uplink port → Proxmox eno1 port
+- [x] Terminate RJ45 connectors on spare cables between router closet and switch room
+- [x] Connect Proxmox eno1 (Intel NIC) to TL-SG108PE switch port 3; enp5s0 (Atheros) stays on router
+- [x] Create vmbr1 on Proxmox bridged to eno1 (bridge_slave learning off); move sensor VM net1 from vmbr0 to vmbr1
+- [x] Find TL-SG108PE switch IP address — 192.168.10.102 (DHCP; assign static eventually)
+- [x] Configure SPAN port on TL-SG108PE: port 1 (router) ingress+egress → port 3 (eno1); end-to-end validated with SID 2100498 firing on testmyids.com curl from Mac
 - [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TL-SG108PE and DSR-250 (see docs/vlan-network-setup.md)
 - [ ] Design and document full VLAN layout (VLAN 10 trusted, 20 DMZ, 30 IoT/cameras, 40 kids/guest) and SPAN architecture — create docs/network-design.md
 - [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
@@ -130,7 +130,7 @@ homelab/
 ### NSM Pipeline
 - [x] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
 - [ ] Configure SSL for Kibana (VM 103) using homelab CA: `./scripts/generate-server-cert.sh elastic elastic.home 192.168.10.31`
-- [ ] Validate end-to-end pipeline (Filebeat → Elasticsearch → Kibana) once SPAN port is wired — blocked on RJ45 connectors arriving
+- [x] Validate end-to-end pipeline (Filebeat → Elasticsearch → Kibana) — SPAN wired, SID 2100498 alert confirmed in Suricata; Suricata fix: set checksum-checks: no in af-packet section and bridge_slave learning off on eno1 to pass unicast SPAN frames to sensor VM
 
 ### Documentation
 - [ ] Write docs/nsm-design-rationale.md — explain NSM tooling choices (Suricata vs Snort, Zeek, ELK stack), trade-offs considered, and why this architecture was chosen
