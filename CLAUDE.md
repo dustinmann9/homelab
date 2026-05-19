@@ -124,6 +124,7 @@ homelab/
 - [x] Add disk space cron on all VMs + PVE — alert at 85% full (especially important for VM 103)
 - [x] Add VM health check cron on PVE — emails if any onboot=1 VM/CT stops unexpectedly; runs every 15 min
 - [ ] Suricata alert emails on VM 102 — simple daily cron now; migrate to Kibana alerting once VM 103 is up
+- [ ] Device-labeled daily alert digest — ES enrich processor (devices index → source.device_name) + Kibana daily rule on classtype:policy-violation; see memory for full plan; blocked on DHCP reservations for family devices
 - [x] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
 - [ ] See docs/email-relay.md for full setup guide and priority order
 
@@ -131,6 +132,7 @@ homelab/
 - [x] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md
 - [ ] Configure SSL for Kibana (VM 103) using homelab CA: `./scripts/generate-server-cert.sh elastic elastic.home 192.168.10.31`
 - [x] Validate end-to-end pipeline (Filebeat → Elasticsearch → Kibana) — SPAN wired, SID 2100498 alert confirmed in Suricata; Suricata fix: set checksum-checks: no in af-packet section and bridge_slave learning off on eno1 to pass unicast SPAN frames to sensor VM
+- [ ] VPN/proxy bypass detection rules — add to config/suricata/local.rules (SID range 9003001–9003999); cover common VPN providers, Tor, and known proxy services
 
 ### Documentation
 - [ ] Write docs/nsm-design-rationale.md — explain NSM tooling choices (Suricata vs Snort, Zeek, ELK stack), trade-offs considered, and why this architecture was chosen
