@@ -6,10 +6,18 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 ## Hardware
 
+### Primary Node (pve, 192.168.10.2)
 - **CPU**: Intel Core i7 (Ivy Bridge), 4 cores
 - **RAM**: 32 GB
 - **Storage**: 250 GB SSD (system) + 4x1TB HDDs in RAID5 (~3TB usable)
 - **Platform**: Proxmox VE
+
+### Second Node (pve2, 192.168.10.9)
+- **Hardware**: Dell OptiPlex 3070 Micro
+- **CPU**: Intel 9th gen (Coffee Lake)
+- **Storage**: NVMe SSD (no RAID)
+- **Platform**: Proxmox VE
+- **Status**: Standalone — not clustered; plan to cluster when 3rd node arrives to avoid 2-node quorum issues
 
 ## Planned VMs
 
@@ -108,6 +116,7 @@ homelab/
 
 ### DNS
 - [x] Configure VMs to use Pi-hole (192.168.10.8) for DNS to resolve *.home local records — update /etc/resolv.conf on VM 101, 102, 103
+- [ ] Add Pi-hole DNS entry for pve2.home → 192.168.10.9
 - [ ] NOTE: Do NOT configure router to use Pi-hole as upstream DNS — reliability requirement, wife must be able to restore network without homelab access
 
 ### VM Maintenance
@@ -127,6 +136,14 @@ homelab/
 - [ ] Device-labeled daily alert digest — ES enrich processor (devices index → source.device_name) + Kibana daily rule on classtype:policy-violation; see memory for full plan; blocked on DHCP reservations for family devices
 - [x] Configure unattended-upgrades Mail setting on all VMs — see docs/email-relay.md
 - [ ] See docs/email-relay.md for full setup guide and priority order
+
+### pve2 (Second Proxmox Node)
+- [x] Install Proxmox on OptiPlex 3070 Micro (192.168.10.9)
+- [x] Standard hardening — dustin user, SSH key auth, fail2ban, postfix relay, unattended-upgrades, disk cron, VM health check, smartd
+- [ ] Generate SSL cert for pve2: `./scripts/generate-server-cert.sh proxmox-pve2 pve2.home 192.168.10.9`
+- [ ] Add dustin@pam to Proxmox web UI on pve2 — `pveum user add dustin@pam && pveum aclmod / -user dustin@pam -role Administrator`
+- [ ] Cluster pve + pve2 — defer until 3rd node to avoid 2-node quorum issues; join is straightforward on fresh node but requires backup/restore if VMs exist
+- [ ] Quorum device — options: Mac VM (short term, corosync-qnetd, 512MB RAM); 3rd OptiPlex 3070 (long term, proper 3-node cluster, no qdevice needed)
 
 ### NSM Pipeline
 - [x] Set up Elastic Stack VM (VM 103, 192.168.10.31): Elasticsearch + Kibana — see docs/elastic-stack-setup.md

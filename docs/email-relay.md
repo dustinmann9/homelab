@@ -30,6 +30,7 @@ The SMTP auth credential in `/etc/postfix/sasl/sasl_passwd` remains the base add
 | VM 101 (192.168.10.20) | Working | N/A | Active (+recipes) | N/A | Active | N/A |
 | VM 102 (192.168.10.30) | Working | N/A | Active (+sensor) | N/A | Active | N/A |
 | VM 103 (192.168.10.31) | Working | N/A | Active (+elastic) | N/A | Active | N/A |
+| PVE2 (192.168.10.9) | Working | N/A | Active (+pve2) | Active (+pve2) | Active | Active (every 15 min) |
 
 ## Prerequisites
 
@@ -58,15 +59,15 @@ sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-Configure `/etc/postfix/main.cf`:
-```
-relayhost = [smtp.gmail.com]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-inet_interfaces = loopback-only
+Configure postfix settings using `postconf -e` (avoids conflicts with existing defaults in main.cf):
+```bash
+sudo postconf -e 'relayhost = [smtp.gmail.com]:587'
+sudo postconf -e 'smtp_use_tls = yes'
+sudo postconf -e 'smtp_sasl_auth_enable = yes'
+sudo postconf -e 'smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd'
+sudo postconf -e 'smtp_sasl_security_options = noanonymous'
+sudo postconf -e 'smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt'
+sudo postconf -e 'inet_interfaces = loopback-only'
 ```
 
 Restart and test:
@@ -108,7 +109,10 @@ sudo mdadm --monitor --scan --oneshot --test
 Monitors auth logs and bans IPs with repeated failures. Emails on ban events.
 
 ```bash
-sudo apt install -y fail2ban
+sudo apt install -y fail2ban rsyslog
+# rsyslog required on Debian Bookworm — creates /var/log/daemon.log needed by proxmox jail
+# Create the file immediately in case rsyslog hasn't written it yet before fail2ban starts
+sudo touch /var/log/daemon.log
 ```
 
 Create `/etc/fail2ban/jail.local`:
@@ -123,6 +127,7 @@ maxretry = 5
 
 [sshd]
 enabled = true
+backend = systemd
 ```
 
 On the PVE host, also enable the Proxmox web UI jail:
@@ -173,8 +178,9 @@ This scans all drives, enables automatic offline testing, emails on any SMART
 attribute failure, and alerts if drive temp exceeds 55°C.
 
 ```bash
-sudo systemctl enable --now smartd
-sudo smartctl -a /dev/sda  # verify SMART is readable on each drive
+sudo systemctl enable --now smartmontools.service
+# Note: smartd.service is an alias on Debian Bookworm — use smartmontools.service directly
+sudo smartctl -a /dev/sda  # verify SMART is readable on each drive (use /dev/nvme0 for NVMe)
 ```
 
 ## Step 5 — Disk Space Alerts (all VMs + PVE)
