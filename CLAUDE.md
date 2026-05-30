@@ -28,7 +28,8 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 | Network Storage | 2 | 6 GB | High | Planned | pve |
 | Network Sensor | 2 | 4 GB | Medium | Running (VM 102, 192.168.10.30) | pve |
 | Elastic Stack | 2 | 10 GB | Medium | Running (VM 103, 192.168.10.31) | pve |
-| Minecraft Server | 2 | 6 GB | Medium | Planned | pve2 |
+| Minecraft Server (Java/Paper) | 2 | 6 GB | Medium | Planned | pve2 |
+| Omada Controller | 1 | 2 GB | Medium | Planned | pve |
 | Ubuntu Dev | 2 | 4 GB | Low | Optional | pve2 |
 
 ## Certificate Authority Infrastructure
@@ -112,7 +113,7 @@ homelab/
 - [x] Configure SPAN port on TL-SG108PE: port 1 (router) ingress+egress → port 3 (eno1); end-to-end validated with SID 2100498 firing on testmyids.com curl from Mac
 - [ ] Configure VLAN 20 for DMZ isolation - requires configuring trunk ports on TL-SG108PE and DSR-250 (see docs/vlan-network-setup.md)
 - [ ] Design and document full VLAN layout (VLAN 10 trusted, 20 DMZ, 30 IoT/cameras, 40 kids/guest) and SPAN architecture — create docs/network-design.md
-- [ ] Set up Omada Controller (LXC or VM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
+- [ ] Set up Omada Controller LXC on pve (1 vCPU, 2 GB RAM) to manage TP-Link EAP access points and enable custom SSL certificates (cert already generated for wap1)
 - [ ] Long-term: move modem/router to switch room (coax already run); this simplifies all network topology
 
 ### DNS
