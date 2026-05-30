@@ -21,14 +21,15 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 ## Planned VMs
 
-| VM | vCPU | RAM | Priority | Status |
-|----|------|-----|----------|--------|
-| Recipes Server | 2 | 3 GB | High | Running (VM 101, 192.168.10.20, API deployed) |
-| Pi-hole | 1 | 2 GB | High | Running (CT 100, 192.168.10.8) |
-| Network Storage | 2 | 6 GB | High | Planned |
-| Network Sensor | 2 | 4 GB | Medium | Running (VM 102, 192.168.10.30) |
-| Elastic Stack | 2 | 10 GB | Medium | Running (VM 103, 192.168.10.31) |
-| Ubuntu Dev | 2 | 4 GB | Low | Optional |
+| VM | vCPU | RAM | Priority | Status | Node |
+|----|------|-----|----------|--------|------|
+| Recipes Server | 2 | 3 GB | High | Running (VM 101, 192.168.10.20, API deployed) | pve |
+| Pi-hole | 1 | 2 GB | High | Running (CT 100, 192.168.10.8) | pve |
+| Network Storage | 2 | 6 GB | High | Planned | pve |
+| Network Sensor | 2 | 4 GB | Medium | Running (VM 102, 192.168.10.30) | pve |
+| Elastic Stack | 2 | 10 GB | Medium | Running (VM 103, 192.168.10.31) | pve |
+| Minecraft Server | 2 | 6 GB | Medium | Planned | pve2 |
+| Ubuntu Dev | 2 | 4 GB | Low | Optional | pve2 |
 
 ## Certificate Authority Infrastructure
 
@@ -142,6 +143,7 @@ homelab/
 - [x] Standard hardening — dustin user, SSH key auth, fail2ban, postfix relay, unattended-upgrades, disk cron, VM health check, smartd
 - [x] Generate SSL cert for pve2: `./scripts/generate-server-cert.sh proxmox-pve2 pve2.home 192.168.10.9`
 - [x] Add dustin@pam to Proxmox web UI on pve2 — `pveum user add dustin@pam && pveum aclmod / -user dustin@pam -role Administrator`
+- [ ] Set up Minecraft server VM on pve2 — 2 vCPU, 6 GB RAM; decide on Java vs Bedrock edition and server software (vanilla, Paper, Fabric)
 - [ ] Cluster pve + pve2 — defer until 3rd node to avoid 2-node quorum issues; join is straightforward on fresh node but requires backup/restore if VMs exist
 - [ ] Quorum device — options: Mac VM (short term, corosync-qnetd, 512MB RAM); 3rd OptiPlex 3070 (long term, proper 3-node cluster, no qdevice needed)
 
