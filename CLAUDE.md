@@ -121,7 +121,7 @@ homelab/
 
 ### VM Maintenance
 - [x] Enable unattended-upgrades on VM 101 (recipes), VM 102 (sensor), and VM 103 (elastic) — security patches only; exclude elasticsearch/kibana packages on VM 103
-- [x] Disable swap on all VMs: `sudo swapoff -a && sudo sed -i '/swap/d' /etc/fstab` — applies to VM 101 (Recipes), VM 103 (Elastic), VM 102 (Sensor)
+- [x] Disable swap on all VMs and PVE nodes: `sudo swapoff -a && sudo sed -i '/swap/d' /etc/fstab` — applies to VM 101 (Recipes), VM 103 (Elastic), VM 102 (Sensor), pve (192.168.10.2), pve2 (192.168.10.9)
 - [x] Configure SSH key auth on VM 103 (elastic) — copy Mac public key to ~/.ssh/authorized_keys
 
 ### Notifications
