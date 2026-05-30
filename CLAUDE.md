@@ -140,7 +140,7 @@ homelab/
 ### pve2 (Second Proxmox Node)
 - [x] Install Proxmox on OptiPlex 3070 Micro (192.168.10.9)
 - [x] Standard hardening — dustin user, SSH key auth, fail2ban, postfix relay, unattended-upgrades, disk cron, VM health check, smartd
-- [ ] Generate SSL cert for pve2: `./scripts/generate-server-cert.sh proxmox-pve2 pve2.home 192.168.10.9`
+- [x] Generate SSL cert for pve2: `./scripts/generate-server-cert.sh proxmox-pve2 pve2.home 192.168.10.9`
 - [ ] Add dustin@pam to Proxmox web UI on pve2 — `pveum user add dustin@pam && pveum aclmod / -user dustin@pam -role Administrator`
 - [ ] Cluster pve + pve2 — defer until 3rd node to avoid 2-node quorum issues; join is straightforward on fresh node but requires backup/restore if VMs exist
 - [ ] Quorum device — options: Mac VM (short term, corosync-qnetd, 512MB RAM); 3rd OptiPlex 3070 (long term, proper 3-node cluster, no qdevice needed)
