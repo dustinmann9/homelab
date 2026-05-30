@@ -14,7 +14,7 @@ This is a Proxmox-based homelab server documentation and configuration repositor
 
 ### Second Node (pve2, 192.168.10.9)
 - **Hardware**: Dell OptiPlex 3070 Micro
-- **CPU**: Intel 9th gen (Coffee Lake)
+- **CPU**: Intel Core i5-9500T @ 2.20GHz (Coffee Lake, 6 cores, 35W TDP low-power desktop)
 - **Storage**: NVMe SSD (no RAID)
 - **Platform**: Proxmox VE
 - **Status**: Standalone — not clustered; plan to cluster when 3rd node arrives to avoid 2-node quorum issues
