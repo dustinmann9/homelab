@@ -116,7 +116,7 @@ homelab/
 
 ### DNS
 - [x] Configure VMs to use Pi-hole (192.168.10.8) for DNS to resolve *.home local records — update /etc/resolv.conf on VM 101, 102, 103
-- [ ] Add Pi-hole DNS entry for pve2.home → 192.168.10.9
+- [x] Add Pi-hole DNS entry for pve2.home → 192.168.10.9
 - [ ] NOTE: Do NOT configure router to use Pi-hole as upstream DNS — reliability requirement, wife must be able to restore network without homelab access
 
 ### VM Maintenance
